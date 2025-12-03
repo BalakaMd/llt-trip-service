@@ -93,7 +93,3 @@ The project follows these principles:
 - Minimum abstractions
 - Comments only where necessary (in English)
 - Clean Architecture (Controller → Service → Repository)
-
-## Project Status
-
-**Phase 1: Project Setup** - ✅ Completed
