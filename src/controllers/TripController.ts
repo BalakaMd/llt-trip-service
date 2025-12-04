@@ -7,10 +7,6 @@ class TripController {
     try {
       const { userId, title, startDate, endDate, originCity, originLat, originLng } = req.body;
 
-      if (!title || !startDate || !endDate) {
-        throw new AppError('Missing required fields: title, startDate, endDate', 400);
-      }
-
       const trip = await TripService.createTrip({
         userId,
         title,

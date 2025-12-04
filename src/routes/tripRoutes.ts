@@ -1,5 +1,12 @@
 import { Router } from 'express';
 import TripController from '../controllers/TripController';
+import { validate } from '../middlewares/validateMiddleware';
+import {
+  createTripSchema,
+  addItineraryItemSchema,
+  uuidParamSchema,
+  userIdParamSchema
+} from '../validators/tripValidators';
 
 const router = Router();
 
@@ -19,9 +26,12 @@ const router = Router();
  *       201:
  *         description: Trip created successfully
  *       400:
- *         description: Missing required fields
+ *         description: Validation error
  */
-router.post('/trips', TripController.createTrip.bind(TripController));
+router.post('/trips',
+  validate(createTripSchema, 'body'),
+  TripController.createTrip.bind(TripController)
+);
 
 /**
  * @swagger
@@ -42,7 +52,10 @@ router.post('/trips', TripController.createTrip.bind(TripController));
  *       404:
  *         description: Trip not found
  */
-router.get('/trips/:id', TripController.getTrip.bind(TripController));
+router.get('/trips/:id',
+  validate(uuidParamSchema, 'params'),
+  TripController.getTrip.bind(TripController)
+);
 
 /**
  * @swagger
@@ -61,7 +74,10 @@ router.get('/trips/:id', TripController.getTrip.bind(TripController));
  *       200:
  *         description: List of trips
  */
-router.get('/users/:userId/trips', TripController.getUserTrips.bind(TripController));
+router.get('/users/:userId/trips',
+  validate(userIdParamSchema, 'params'),
+  TripController.getUserTrips.bind(TripController)
+);
 
 /**
  * @swagger
@@ -86,9 +102,13 @@ router.get('/users/:userId/trips', TripController.getUserTrips.bind(TripControll
  *       201:
  *         description: Item added successfully
  *       400:
- *         description: Missing required fields
+ *         description: Validation error
  */
-router.post('/trips/:id/items', TripController.addItineraryItem.bind(TripController));
+router.post('/trips/:id/items',
+  validate(uuidParamSchema, 'params'),
+  validate(addItineraryItemSchema, 'body'),
+  TripController.addItineraryItem.bind(TripController)
+);
 
 /**
  * @swagger
@@ -111,6 +131,10 @@ router.post('/trips/:id/items', TripController.addItineraryItem.bind(TripControl
  *             schema:
  *               $ref: '#/components/schemas/MapResponse'
  */
-router.get('/trips/:id/map', TripController.getTripMapData.bind(TripController));
+router.get('/trips/:id/map',
+  validate(uuidParamSchema, 'params'),
+  TripController.getTripMapData.bind(TripController)
+);
 
 export default router;
+

@@ -71,12 +71,24 @@ The server will be available at `http://localhost:3000`
 - `npm start` - start production version
 - `npm run db:migrate` - apply database migrations
 
-## API Endpoints (planned)
+## API Documentation
+
+Interactive API documentation is available via Swagger UI:
+
+**URL**: `http://localhost:3000/docs`
+
+The documentation includes:
+- All available endpoints
+- Request/response schemas
+- Try-it-out functionality
+
+## API Endpoints
 
 - `POST /api/v1/trips` - create a trip
 - `GET /api/v1/trips/:id` - get a trip
+- `GET /api/v1/users/:userId/trips` - get user's trips
 - `POST /api/v1/trips/:id/items` - add a place to the itinerary
-- `GET /api/v1/trips/:id/map` - get map data
+- `GET /api/v1/trips/:id/map` - get map data for Google Maps
 
 ## Database Structure
 
