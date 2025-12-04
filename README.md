@@ -1,6 +1,6 @@
-# Trip Service
+# LittleLifeTrip Trip Service API Documentation
 
-A microservice for managing trips (Trip Service) as part of the TravelFinder platform.
+A microservice for managing trips (LittleLifeTrip) as part of the LittleLifeTrip platform.
 
 ## Technology Stack
 

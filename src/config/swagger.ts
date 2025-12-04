@@ -4,9 +4,9 @@ const options: swaggerJsdoc.Options = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'Trip Service API',
+      title: 'LittleLifeTrip Trips service API',
       version: '1.0.0',
-      description: 'A microservice for managing trips as part of the TravelFinder platform',
+      description: 'A microservice for managing trips as part of the LittleLifeTrip platform',
     },
     servers: [
       {
