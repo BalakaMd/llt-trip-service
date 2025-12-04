@@ -1,6 +1,8 @@
 import express, { Application } from 'express';
 import dotenv from 'dotenv';
+import swaggerUi from 'swagger-ui-express';
 import sequelize from './config/database';
+import swaggerSpec from './config/swagger';
 import tripRoutes from './routes/tripRoutes';
 import { errorMiddleware } from './middlewares/errorMiddleware';
 
@@ -12,6 +14,9 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Swagger documentation
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Routes
 app.use('/api/v1', tripRoutes);
