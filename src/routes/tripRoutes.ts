@@ -3,6 +3,7 @@ import TripController from '../controllers/TripController';
 import { validate } from '../middlewares/validateMiddleware';
 import {
   createTripSchema,
+  updateTripSchema,
   addItineraryItemSchema,
   uuidParamSchema,
   userIdParamSchema
@@ -55,6 +56,63 @@ router.post('/trips',
 router.get('/trips/:id',
   validate(uuidParamSchema, 'params'),
   TripController.getTrip.bind(TripController)
+);
+
+/**
+ * @swagger
+ * /trips/{id}:
+ *   patch:
+ *     summary: Update a trip
+ *     tags: [Trips]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/UpdateTripRequest'
+ *     responses:
+ *       200:
+ *         description: Trip updated successfully
+ *       400:
+ *         description: Validation error
+ *       404:
+ *         description: Trip not found
+ */
+router.patch('/trips/:id',
+  validate(uuidParamSchema, 'params'),
+  validate(updateTripSchema, 'body'),
+  TripController.updateTrip.bind(TripController)
+);
+
+/**
+ * @swagger
+ * /trips/{id}:
+ *   delete:
+ *     summary: Delete a trip
+ *     tags: [Trips]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *     responses:
+ *       204:
+ *         description: Trip deleted successfully
+ *       404:
+ *         description: Trip not found
+ */
+router.delete('/trips/:id',
+  validate(uuidParamSchema, 'params'),
+  TripController.deleteTrip.bind(TripController)
 );
 
 /**

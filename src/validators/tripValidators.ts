@@ -29,6 +29,17 @@ export const createTripSchema = Joi.object({
     })
 });
 
+export const updateTripSchema = Joi.object({
+  title: Joi.string().min(1).max(255).optional(),
+  startDate: Joi.date().iso().optional(),
+  endDate: Joi.date().iso().optional(),
+  originCity: Joi.string().max(255).optional().allow(null),
+  originLat: Joi.number().min(-90).max(90).optional().allow(null),
+  originLng: Joi.number().min(-180).max(180).optional().allow(null)
+}).min(1).messages({
+  'object.min': 'At least one field must be provided for update'
+});
+
 export const addItineraryItemSchema = Joi.object({
   googlePlaceId: Joi.string().required()
     .messages({

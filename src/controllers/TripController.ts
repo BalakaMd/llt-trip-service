@@ -60,6 +60,42 @@ class TripController {
     }
   }
 
+  async deleteTrip(req: Request, res: Response): Promise<void> {
+    try {
+      const { id } = req.params;
+
+      const deleted = await TripService.deleteTrip(id);
+
+      if (!deleted) {
+        throw new AppError('Trip not found', 404);
+      }
+
+      res.status(204).send();
+    } catch (error) {
+      handleError(error, res);
+    }
+  }
+
+  async updateTrip(req: Request, res: Response): Promise<void> {
+    try {
+      const { id } = req.params;
+      const updateData = req.body;
+
+      const trip = await TripService.updateTrip(id, updateData);
+
+      if (!trip) {
+        throw new AppError('Trip not found', 404);
+      }
+
+      res.status(200).json({
+        status: 'success',
+        data: { trip }
+      });
+    } catch (error) {
+      handleError(error, res);
+    }
+  }
+
   async addItineraryItem(req: Request, res: Response): Promise<void> {
     try {
       const { id } = req.params;

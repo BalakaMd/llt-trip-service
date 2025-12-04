@@ -48,6 +48,17 @@ const options: swaggerJsdoc.Options = {
             originLng: { type: 'number', example: 30.5234 },
           },
         },
+        UpdateTripRequest: {
+          type: 'object',
+          properties: {
+            title: { type: 'string', example: 'Updated Trip Title' },
+            startDate: { type: 'string', format: 'date', example: '2024-06-01' },
+            endDate: { type: 'string', format: 'date', example: '2024-06-05' },
+            originCity: { type: 'string', example: 'Lviv' },
+            originLat: { type: 'number', example: 49.8397 },
+            originLng: { type: 'number', example: 24.0297 },
+          },
+        },
         AddItineraryItemRequest: {
           type: 'object',
           required: ['googlePlaceId', 'name', 'location', 'dayIndex', 'orderIndex'],

@@ -27,6 +27,29 @@ class TripService {
     return await TripRepository.findByUserId(userId);
   }
 
+  async deleteTrip(tripId: string): Promise<boolean> {
+    const deleted = await TripRepository.delete(tripId);
+    return deleted > 0;
+  }
+
+  async updateTrip(tripId: string, data: Partial<CreateTripDTO>): Promise<Trip | null> {
+    const trip = await TripRepository.findById(tripId);
+    if (!trip) {
+      return null;
+    }
+
+    const updateData: any = {};
+    if (data.title !== undefined) updateData.title = data.title;
+    if (data.startDate !== undefined) updateData.startDate = new Date(data.startDate);
+    if (data.endDate !== undefined) updateData.endDate = new Date(data.endDate);
+    if (data.originCity !== undefined) updateData.originCity = data.originCity;
+    if (data.originLat !== undefined) updateData.originLat = data.originLat;
+    if (data.originLng !== undefined) updateData.originLng = data.originLng;
+
+    await TripRepository.update(tripId, updateData);
+    return await TripRepository.findById(tripId);
+  }
+
   async addItineraryItem(tripId: string, data: AddItineraryItemDTO): Promise<ItineraryItem> {
     // First, ensure the place exists in the global catalog
     const place = await PlaceRepository.findOrCreate({
