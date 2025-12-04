@@ -8,6 +8,7 @@ A microservice for managing trips (LittleLifeTrip) as part of the LittleLifeTrip
 - **Express** - web framework
 - **Sequelize** - ORM for PostgreSQL
 - **PostgreSQL** - database
+- **Joi** - validation
 
 ## Architecture
 
@@ -86,6 +87,8 @@ The documentation includes:
 
 - `POST /api/v1/trips` - create a trip
 - `GET /api/v1/trips/:id` - get a trip
+- `DELETE /api/v1/trips/:id` - delete a trip
+- `PATCH /api/v1/trips/:id` - update a trip
 - `GET /api/v1/users/:userId/trips` - get user's trips
 - `POST /api/v1/trips/:id/items` - add a place to the itinerary
 - `GET /api/v1/trips/:id/map` - get map data for Google Maps
@@ -97,11 +100,3 @@ The documentation includes:
 - **trips** - main trips table
 - **places** - places directory (Google Places cache)
 - **itinerary_items** - itinerary items (with Snapshot pattern)
-
-## Development
-
-The project follows these principles:
-- Simple and clear code
-- Minimum abstractions
-- Comments only where necessary (in English)
-- Clean Architecture (Controller → Service → Repository)
