@@ -110,7 +110,6 @@ Trip.init(
   {
     sequelize,
     tableName: 'trips',
-    schema: 'trip',
     timestamps: true,
     underscored: true
   }

@@ -73,7 +73,6 @@ Place.init(
   {
     sequelize,
     tableName: 'places',
-    schema: 'trip',
     timestamps: false,
     underscored: true
   }

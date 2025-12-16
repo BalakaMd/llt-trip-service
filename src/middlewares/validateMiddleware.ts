@@ -7,7 +7,7 @@ type ValidationType = 'body' | 'params' | 'query';
 export const validate = (schema: Joi.ObjectSchema, type: ValidationType = 'body') => {
   return (req: Request, res: Response, next: NextFunction) => {
     const dataToValidate = req[type];
-    
+
     const { error, value } = schema.validate(dataToValidate, {
       abortEarly: false,
       stripUnknown: true

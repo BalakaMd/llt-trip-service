@@ -122,7 +122,6 @@ ItineraryItem.init(
   {
     sequelize,
     tableName: 'itinerary_items',
-    schema: 'trip',
     timestamps: true,
     underscored: true,
     indexes: [
