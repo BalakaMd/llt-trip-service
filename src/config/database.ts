@@ -1,4 +1,5 @@
-import { Sequelize } from 'sequelize';
+import { Sequelize } from "sequelize";
+import { initModels } from "../db/index";
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -6,11 +7,10 @@ dotenv.config();
 const sequelize = new Sequelize({
   host: process.env.DB_HOST,
   port: Number(process.env.DB_PORT),
-  database: process.env.DB_NAME,
-  username: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
+  database: process.env.POSTGRES_DB,
+  username: process.env.POSTGRES_USER,
+  password: process.env.POSTGRES_PASSWORD,
   dialect: 'postgres',
-  schema: process.env.DB_SCHEMA,
   logging: process.env.NODE_ENV === 'development' ? console.log : false,
   pool: {
     max: 5,
@@ -19,5 +19,12 @@ const sequelize = new Sequelize({
     idle: 10000
   }
 });
+
+export async function initDb() {
+  initModels(sequelize);
+
+  // create/update tables
+  await sequelize.sync();
+}
 
 export default sequelize;

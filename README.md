@@ -21,6 +21,7 @@ src/
 ├── repositories/    # Data access layer
 ├── services/        # Business logic
 ├── controllers/     # HTTP handlers
+├── db/              # Database models
 ├── routes/          # API routes
 ├── middlewares/     # Express middleware
 ├── utils/           # Utility functions
@@ -43,40 +44,28 @@ Copy `.env.example` to `.env` and configure the variables:
 cp .env.example .env
 ```
 
-### 3. Start PostgreSQL
+## Quick start (Docker)
 
-Make sure PostgreSQL is running and create the database:
+`docker compose up --build`
 
-```bash
-createdb trip_service_db
+- Service: http://localhost:3000
+- Swagger: http://localhost:3000/auth/docs
+- Postgres container for this service is included in `docker-compose.yml`.
+
+## Local dev (without Docker)
+
 ```
-
-### 4. Run Migrations
-
-```bash
-npm run db:migrate
-```
-
-### 5. Start in Development Mode
-
-```bash
-npm run dev
+npm i
+npm run dev # nodemon
 ```
 
 The server will be available at `http://localhost:3000`
-
-## Available Commands
-
-- `npm run dev` - start in development mode with hot-reload
-- `npm run build` - build TypeScript to JavaScript
-- `npm start` - start production version
-- `npm run db:migrate` - apply database migrations
 
 ## API Documentation
 
 Interactive API documentation is available via Swagger UI:
 
-**URL**: `http://localhost:3000/docs`
+**URL**: `http://localhost:3000/trip/docs`
 
 The documentation includes:
 - All available endpoints
@@ -95,7 +84,7 @@ The documentation includes:
 
 ## Database Structure
 
-### Schema: `trip`
+### Schema:
 
 - **trips** - main trips table
 - **places** - places directory (Google Places cache)
