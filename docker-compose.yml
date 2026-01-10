@@ -1,22 +1,4 @@
 services:
-  trip-postgres:
-    container_name: trip-postgres
-    image: postgres:17.4
-    restart: always
-    ports:
-      - 5432:5432
-    healthcheck:
-      test: ["CMD-SHELL","pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
-      interval: 5s
-      timeout: 3s
-      retries: 5
-    env_file:
-      - .env
-    volumes:
-      - pg_data:/var/lib/postgresql/data
-    networks:
-      - llt-net
-
   trip-service:
     container_name: trip-service
     restart: always
@@ -27,9 +9,6 @@ services:
       dockerfile: Dockerfile
     env_file:
       - .env
-    depends_on:
-      trip-postgres:
-        condition: service_healthy
     networks:
       - llt-net
 
@@ -37,6 +16,3 @@ networks:
   llt-net:
     external: true
     name: llt-net
-
-volumes:
-  pg_data:
