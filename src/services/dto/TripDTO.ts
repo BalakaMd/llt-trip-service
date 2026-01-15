@@ -3,9 +3,53 @@ export interface CreateTripDTO {
   title: string;
   startDate: string;
   endDate: string;
+  durationDays: number;
   originCity?: string;
   originLat?: number;
   originLng?: number;
+  transportMode: 'car' | 'public' | 'bike' | 'walk';
+  totalBudgetEstimate?: number;
+  currency?: string;
+}
+
+export interface RecommendTripDTO {
+  origin: {
+    city: string;
+    lat?: number;
+    lng?: number;
+  };
+  dates: {
+    start: string;
+    end: string;
+  };
+  durationDays: number;
+  budget: number;
+  interests: string[];
+  transport: 'car' | 'public' | 'bike' | 'walk';
+  timezone?: string;
+  dryRun?: boolean;
+}
+
+export interface BudgetItemDTO {
+  id?: string;
+  category: 'transport' | 'stay' | 'food' | 'activities' | 'other';
+  title: string;
+  quantity: number;
+  unitPrice: number;
+  currency: string;
+  source: 'ai' | 'user' | 'integration';
+  linkedItineraryItemId?: string;
+}
+
+export interface BudgetSummaryDTO {
+  totalAmount: number;
+  currency: string;
+  categories: {
+    [key: string]: {
+      amount: number;
+      items: number;
+    };
+  };
 }
 
 export interface AddItineraryItemDTO {

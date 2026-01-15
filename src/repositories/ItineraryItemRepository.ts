@@ -11,14 +11,24 @@ class ItineraryItemRepository extends BaseRepository<ItineraryItem> {
       where: { tripId },
       order: [
         ['dayIndex', 'ASC'],
-        ['orderIndex', 'ASC']
-      ]
+        ['orderIndex', 'ASC'],
+      ],
     });
   }
 
   async deleteByTripId(tripId: string): Promise<number> {
     return await this.model.destroy({
-      where: { tripId } as any
+      where: { tripId } as any,
+    });
+  }
+
+  async findByTripIdAndDay(
+    tripId: string,
+    dayIndex: number,
+  ): Promise<ItineraryItem[]> {
+    return await this.model.findAll({
+      where: { tripId, dayIndex },
+      order: [['orderIndex', 'ASC']],
     });
   }
 }

@@ -1,5 +1,5 @@
-import { Sequelize } from "sequelize";
-import { initModels } from "../db/index";
+import { Sequelize } from 'sequelize';
+import { initModels } from '../db/index';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -16,8 +16,8 @@ const sequelize = new Sequelize({
     max: 5,
     min: 0,
     acquire: 30000,
-    idle: 10000
-  }
+    idle: 10000,
+  },
 });
 
 export async function initDb() {
