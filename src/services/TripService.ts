@@ -3,6 +3,7 @@ import ItineraryItemRepository from '../repositories/ItineraryItemRepository';
 import PlaceRepository from '../repositories/PlaceRepository';
 import BudgetItemRepository from '../repositories/BudgetItemRepository';
 import RouteCacheRepository from '../repositories/RouteCacheRepository';
+import AIRecommendationService from './AIRecommendationService';
 import {
   CreateTripDTO,
   AddItineraryItemDTO,
@@ -22,7 +23,6 @@ class TripService {
       title: data.title,
       startDate: new Date(data.startDate),
       endDate: new Date(data.endDate),
-      durationDays: data.durationDays,
       originCity: data.originCity,
       originLat: data.originLat,
       originLng: data.originLng,
@@ -153,36 +153,40 @@ class TripService {
   }
 
   async recommendTrip(data: RecommendTripDTO): Promise<Trip | any> {
-    // This is a placeholder for AI integration
-    // In a real implementation, this would call the AI Recommender Service
+    console.log(
+      'recommendTrip called with data:',
+      JSON.stringify(data, null, 2),
+    );
+
+    // Call AI recommendation service
+    console.log('Calling AI recommendation service...');
+    const aiRecommendation =
+      await AIRecommendationService.getRecommendations(data);
+
+    console.log(
+      'AI recommendation received:',
+      JSON.stringify(aiRecommendation, null, 2),
+    );
+
     if (data.dryRun) {
       return {
-        title: `Weekend trip to ${data.origin.city}`,
-        summary: `${data.durationDays}-day trip with ${data.interests.join(
-          ', ',
-        )} activities`,
-        startDate: data.dates.start,
-        endDate: data.dates.end,
-        durationDays: data.durationDays,
-        transportMode: data.transport,
-        totalBudgetEstimate: data.budget,
-        currency: 'USD',
+        ...aiRecommendation,
         preview: true,
       };
     }
 
-    // Create actual trip
+    // Create actual trip based on AI recommendation
+    console.log('Creating trip with AI recommendation...');
     const trip = await this.createTrip({
-      title: `Weekend trip to ${data.origin.city}`,
+      title: aiRecommendation.title,
       startDate: data.dates.start,
       endDate: data.dates.end,
-      durationDays: data.durationDays,
       originCity: data.origin.city,
       originLat: data.origin.lat,
       originLng: data.origin.lng,
       transportMode: data.transport,
       totalBudgetEstimate: data.budget,
-      currency: 'USD',
+      currency: aiRecommendation.currency || 'USD',
     });
 
     return trip;
@@ -200,7 +204,6 @@ class TripService {
       summary: originalTrip.summary,
       startDate: originalTrip.startDate,
       endDate: originalTrip.endDate,
-      durationDays: originalTrip.durationDays,
       originCity: originalTrip.originCity,
       originLat: originalTrip.originLat,
       originLng: originalTrip.originLng,

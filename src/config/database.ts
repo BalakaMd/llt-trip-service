@@ -23,8 +23,8 @@ const sequelize = new Sequelize({
 export async function initDb() {
   initModels(sequelize);
 
-  // create/update tables
-  await sequelize.sync();
+  // create/update tables with alter: true to add new columns
+  await sequelize.sync({ alter: true });
 }
 
 export default sequelize;

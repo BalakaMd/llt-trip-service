@@ -3,7 +3,6 @@ export interface CreateTripDTO {
   title: string;
   startDate: string;
   endDate: string;
-  durationDays: number;
   originCity?: string;
   originLat?: number;
   originLng?: number;
@@ -22,7 +21,6 @@ export interface RecommendTripDTO {
     start: string;
     end: string;
   };
-  durationDays: number;
   budget: number;
   interests: string[];
   transport: 'car' | 'public' | 'bike' | 'walk';

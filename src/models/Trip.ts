@@ -8,7 +8,6 @@ interface TripAttributes {
   summary: string | null;
   startDate: Date;
   endDate: Date;
-  durationDays: number;
   originCity: string | null;
   originLat: number | null;
   originLng: number | null;
@@ -22,23 +21,22 @@ interface TripAttributes {
   updatedAt: Date;
 }
 
-interface TripCreationAttributes
-  extends Optional<
-    TripAttributes,
-    | 'id'
-    | 'userId'
-    | 'summary'
-    | 'originCity'
-    | 'originLat'
-    | 'originLng'
-    | 'totalBudgetEstimate'
-    | 'currency'
-    | 'status'
-    | 'visibility'
-    | 'shareSlug'
-    | 'createdAt'
-    | 'updatedAt'
-  > {}
+interface TripCreationAttributes extends Optional<
+  TripAttributes,
+  | 'id'
+  | 'userId'
+  | 'summary'
+  | 'originCity'
+  | 'originLat'
+  | 'originLng'
+  | 'totalBudgetEstimate'
+  | 'currency'
+  | 'status'
+  | 'visibility'
+  | 'shareSlug'
+  | 'createdAt'
+  | 'updatedAt'
+> {}
 
 class Trip
   extends Model<TripAttributes, TripCreationAttributes>
@@ -50,7 +48,6 @@ class Trip
   public summary!: string | null;
   public startDate!: Date;
   public endDate!: Date;
-  public durationDays!: number;
   public originCity!: string | null;
   public originLat!: number | null;
   public originLng!: number | null;
@@ -93,11 +90,6 @@ Trip.init(
       type: DataTypes.DATEONLY,
       allowNull: false,
       field: 'end_date',
-    },
-    durationDays: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      field: 'duration_days',
     },
     originCity: {
       type: DataTypes.STRING(255),

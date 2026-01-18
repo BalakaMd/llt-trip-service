@@ -15,8 +15,35 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Swagger documentation
-app.use('/trip/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+// Swagger documentation with enhanced UI options
+const swaggerOptions = {
+  explorer: true,
+  swaggerOptions: {
+    persistAuthorization: true,
+    displayRequestDuration: true,
+    docExpansion: 'list',
+    filter: true,
+    showExtensions: true,
+    showCommonExtensions: true,
+    tryItOutEnabled: true,
+    requestSnippetsEnabled: true,
+    defaultModelsExpandDepth: 2,
+    defaultModelExpandDepth: 2,
+  },
+  customCss: `
+    .swagger-ui .topbar { display: none }
+    .swagger-ui .info .title { color: #3b82f6 }
+    .swagger-ui .scheme-container { background: #f8fafc; padding: 10px; border-radius: 4px; }
+  `,
+  customSiteTitle: 'LittleLifeTrip Trips API Documentation',
+  customfavIcon: '/favicon.ico',
+};
+
+app.use(
+  '/trip/docs',
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerSpec, swaggerOptions),
+);
 
 // Routes
 app.use('/api/v1', tripRoutes);
@@ -33,11 +60,11 @@ app.use(errorMiddleware);
 const startServer = async () => {
   try {
     await initDb();
-    console.log("Database synced successfully.");
+    console.log('Database synced successfully.');
 
     app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
   } catch (error) {
-    console.error("Unable to start:", error);
+    console.error('Unable to start:', error);
     process.exit(1);
   }
 };

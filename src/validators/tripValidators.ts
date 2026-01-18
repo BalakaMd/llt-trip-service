@@ -13,10 +13,6 @@ export const createTripSchema = Joi.object({
     'date.min': 'End date must be after or equal to start date',
     'date.format': 'End date must be a valid ISO date (YYYY-MM-DD)',
   }),
-  durationDays: Joi.number().integer().min(1).max(30).required().messages({
-    'number.min': 'Duration must be at least 1 day',
-    'number.max': 'Duration cannot exceed 30 days',
-  }),
   originCity: Joi.string().max(255).optional(),
   originLat: Joi.number().min(-90).max(90).optional().messages({
     'number.min': 'Latitude must be between -90 and 90',
@@ -27,11 +23,8 @@ export const createTripSchema = Joi.object({
     'number.max': 'Longitude must be between -180 and 180',
   }),
   transportMode: Joi.string()
-    .valid('car', 'public', 'bike', 'walk')
-    .required()
-    .messages({
-      'any.only': 'Transport mode must be one of: car, public, bike, walk',
-    }),
+    .valid('car', 'plane', 'train', 'bus', 'public', 'bike', 'walk')
+    .optional(),
   totalBudgetEstimate: Joi.number().min(0).optional(),
   currency: Joi.string().length(3).optional().default('USD').messages({
     'string.length': 'Currency must be a 3-character code (e.g., USD, EUR)',
@@ -100,7 +93,6 @@ export const recommendTripSchema = Joi.object({
     start: Joi.date().iso().required(),
     end: Joi.date().iso().min(Joi.ref('start')).required(),
   }).required(),
-  durationDays: Joi.number().integer().min(1).max(30).required(),
   budget: Joi.number().min(0).required(),
   interests: Joi.array().items(Joi.string()).min(1).required().messages({
     'array.min': 'At least one interest must be specified',
