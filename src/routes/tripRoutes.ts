@@ -396,7 +396,12 @@ router.get(
  *                   example: success
  *                 data:
  *                   type: object
- *                   description: AI-generated trip recommendation with destinations and itinerary
+ *                   properties:
+ *                     trip:
+ *                       $ref: '#/components/schemas/Trip'
+ *                     mapData:
+ *                       $ref: '#/components/schemas/MapResponse'
+ *                   description: AI-generated trip recommendation with destinations, itinerary, and map data
  *       400:
  *         description: Invalid request parameters
  *         content:

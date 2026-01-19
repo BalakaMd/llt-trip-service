@@ -1,3 +1,5 @@
+import { Trip } from '../../models';
+
 export interface CreateTripDTO {
   userId?: string;
   title: string;
@@ -94,4 +96,10 @@ export interface MapResponseDTO {
     east: number;
     west: number;
   };
+}
+
+export interface RecommendTripResponseDTO {
+  trip: Trip;
+  mapData: MapResponseDTO;
+  preview?: boolean;
 }

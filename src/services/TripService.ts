@@ -10,6 +10,7 @@ import {
   MapResponseDTO,
   MapMarkerDTO,
   RecommendTripDTO,
+  RecommendTripResponseDTO,
   BudgetItemDTO,
   BudgetSummaryDTO,
 } from './dto/TripDTO';
@@ -152,21 +153,12 @@ class TripService {
     };
   }
 
-  async recommendTrip(data: RecommendTripDTO): Promise<Trip | any> {
-    console.log(
-      'recommendTrip called with data:',
-      JSON.stringify(data, null, 2),
-    );
-
+  async recommendTrip(
+    data: RecommendTripDTO,
+  ): Promise<RecommendTripResponseDTO | any> {
     // Call AI recommendation service
-    console.log('Calling AI recommendation service...');
     const aiRecommendation =
       await AIRecommendationService.getRecommendations(data);
-
-    console.log(
-      'AI recommendation received:',
-      JSON.stringify(aiRecommendation, null, 2),
-    );
 
     if (data.dryRun) {
       return {
@@ -176,7 +168,6 @@ class TripService {
     }
 
     // Create actual trip based on AI recommendation
-    console.log('Creating trip with AI recommendation...');
     const trip = await this.createTrip({
       title: aiRecommendation.title,
       startDate: data.dates.start,
@@ -190,7 +181,6 @@ class TripService {
     });
 
     // Create itinerary items from AI recommendation
-    console.log('Creating itinerary items from AI recommendation...');
     if (aiRecommendation.itinerary && aiRecommendation.itinerary.length > 0) {
       for (const item of aiRecommendation.itinerary) {
         // Parse start time and create full datetime
@@ -221,14 +211,18 @@ class TripService {
           snapshotAddress: null, // AI doesn't provide address, could be enhanced later
         });
       }
-      console.log(
-        `Created ${aiRecommendation.itinerary.length} itinerary items`,
-      );
     }
 
-    // Return trip with itinerary items
+    // Get trip with itinerary items
     const tripWithItinerary = await this.getTripById(trip.id);
-    return tripWithItinerary;
+
+    // Get map data for the created trip
+    const mapData = await this.getTripMapData(trip.id);
+
+    return {
+      trip: tripWithItinerary,
+      mapData,
+    };
   }
 
   async cloneTrip(tripId: string, userId?: string): Promise<Trip> {
