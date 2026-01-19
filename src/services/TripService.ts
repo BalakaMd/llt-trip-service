@@ -185,11 +185,50 @@ class TripService {
       originLat: data.origin.lat,
       originLng: data.origin.lng,
       transportMode: data.transport,
-      totalBudgetEstimate: data.budget,
-      currency: aiRecommendation.currency || 'USD',
+      totalBudgetEstimate: aiRecommendation.total_budget_estimate,
+      currency: aiRecommendation.currency,
     });
 
-    return trip;
+    // Create itinerary items from AI recommendation
+    console.log('Creating itinerary items from AI recommendation...');
+    if (aiRecommendation.itinerary && aiRecommendation.itinerary.length > 0) {
+      for (const item of aiRecommendation.itinerary) {
+        // Parse start time and create full datetime
+        const startDate = new Date(data.dates.start);
+        const [hours, minutes] = item.start_time.split(':').map(Number);
+        const plannedStartAt = new Date(startDate);
+        plannedStartAt.setDate(startDate.getDate() + item.day_index);
+        plannedStartAt.setHours(hours, minutes, 0, 0);
+
+        // Calculate end time based on duration
+        const plannedEndAt = new Date(plannedStartAt);
+        plannedEndAt.setMinutes(
+          plannedStartAt.getMinutes() + item.duration_minutes,
+        );
+
+        await ItineraryItemRepository.create({
+          tripId: trip.id,
+          dayIndex: item.day_index,
+          orderIndex: item.order_index,
+          title: item.title,
+          description: item.description,
+          plannedStartAt,
+          plannedEndAt,
+          costEstimate: item.estimated_cost,
+          snapshotLat: item.coordinates.lat,
+          snapshotLng: item.coordinates.lng,
+          snapshotPlaceName: item.place_name,
+          snapshotAddress: null, // AI doesn't provide address, could be enhanced later
+        });
+      }
+      console.log(
+        `Created ${aiRecommendation.itinerary.length} itinerary items`,
+      );
+    }
+
+    // Return trip with itinerary items
+    const tripWithItinerary = await this.getTripById(trip.id);
+    return tripWithItinerary;
   }
 
   async cloneTrip(tripId: string, userId?: string): Promise<Trip> {
