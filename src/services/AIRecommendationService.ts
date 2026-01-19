@@ -64,6 +64,8 @@ class AIRecommendationService {
             travel_party_size: 1,
           },
           timezone: data.timezone,
+          currency: data.currency || 'UAH',
+          language: data.language || 'Ukrainian',
         },
         {
           timeout: 120000, // 120 seconds timeout - increased for AI processing

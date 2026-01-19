@@ -383,6 +383,8 @@ router.get(
  *             transport: "car"
  *             timezone: "Europe/Kyiv"
  *             dryRun: false
+ *             currency: "UAH"
+ *             language: "Ukrainian"
  *     responses:
  *       200:
  *         description: Trip recommendation generated successfully

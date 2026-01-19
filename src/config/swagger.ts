@@ -17,9 +17,6 @@ const options: swaggerJsdoc.Options = {
         - **Trip Sharing**: Generate public share links
         - **AI Recommendations**: Get personalized trip suggestions
         
-        ## Authentication
-        This API currently does not require authentication, but user IDs should be provided in requests.
-        
         ## Error Handling
         All endpoints return consistent error responses with status codes and descriptive messages.
       `,

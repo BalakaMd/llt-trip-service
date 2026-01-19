@@ -28,6 +28,8 @@ export interface RecommendTripDTO {
   transport: 'car' | 'public' | 'bike' | 'walk';
   timezone?: string;
   dryRun?: boolean;
+  currency?: string;
+  language?: string;
 }
 
 export interface BudgetItemDTO {

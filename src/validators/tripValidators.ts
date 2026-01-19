@@ -100,6 +100,12 @@ export const recommendTripSchema = Joi.object({
   transport: Joi.string().valid('car', 'public', 'bike', 'walk').required(),
   timezone: Joi.string().optional(),
   dryRun: Joi.boolean().optional().default(false),
+  currency: Joi.string().length(3).optional().default('UAH').messages({
+    'string.length': 'Currency must be a 3-character code (e.g., USD, EUR)',
+  }),
+  language: Joi.string().optional().default('Ukrainian').messages({
+    'string.base': 'Language must be a string',
+  }),
 });
 
 export const budgetItemSchema = Joi.object({
@@ -109,7 +115,7 @@ export const budgetItemSchema = Joi.object({
   title: Joi.string().min(1).max(255).required(),
   quantity: Joi.number().integer().min(1).required().default(1),
   unitPrice: Joi.number().min(0).required(),
-  currency: Joi.string().length(3).required().default('USD'),
+  currency: Joi.string().length(3).required().default('UAH'),
   source: Joi.string().valid('ai', 'user', 'integration').required(),
   linkedItineraryItemId: Joi.string().uuid().optional(),
 });
