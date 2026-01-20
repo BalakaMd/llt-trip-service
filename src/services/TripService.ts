@@ -22,6 +22,7 @@ class TripService {
     const trip = await TripRepository.create({
       userId: data.userId || null,
       title: data.title,
+      summary: data.summary || null,
       startDate: new Date(data.startDate),
       endDate: new Date(data.endDate),
       originCity: data.originCity,
@@ -59,6 +60,7 @@ class TripService {
 
     const updateData: any = {};
     if (data.title !== undefined) updateData.title = data.title;
+    if (data.summary !== undefined) updateData.summary = data.summary;
     if (data.startDate !== undefined)
       updateData.startDate = new Date(data.startDate);
     if (data.endDate !== undefined) updateData.endDate = new Date(data.endDate);
@@ -171,6 +173,7 @@ class TripService {
     const trip = await this.createTrip({
       userId: data.userId,
       title: aiRecommendation.title,
+      summary: aiRecommendation.summary,
       startDate: data.dates.start,
       endDate: data.dates.end,
       originCity: data.origin.city,
