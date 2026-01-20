@@ -15,7 +15,7 @@ interface TripAttributes {
   totalBudgetEstimate: number | null;
   currency: string;
   status: 'draft' | 'final';
-  visibility: 'private' | 'unlisted' | 'public';
+  visibility: 'private' | 'shared' | 'public';
   shareSlug: string | null;
   createdAt: Date;
   updatedAt: Date;
@@ -55,7 +55,7 @@ class Trip
   public totalBudgetEstimate!: number | null;
   public currency!: string;
   public status!: 'draft' | 'final';
-  public visibility!: 'private' | 'unlisted' | 'public';
+  public visibility!: 'private' | 'shared' | 'public';
   public shareSlug!: string | null;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -126,7 +126,7 @@ Trip.init(
       defaultValue: 'draft',
     },
     visibility: {
-      type: DataTypes.ENUM('private', 'unlisted', 'public'),
+      type: DataTypes.ENUM('private', 'shared', 'public'),
       defaultValue: 'private',
     },
     shareSlug: {

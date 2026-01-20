@@ -283,7 +283,7 @@ class TripService {
     const shareSlug = this.generateShareSlug();
     await TripRepository.update(tripId, {
       shareSlug,
-      visibility: 'unlisted',
+      visibility: 'shared',
     });
 
     return shareSlug;

@@ -3,7 +3,7 @@ import { Trip } from '../../models';
 export interface CreateTripDTO {
   userId: string;
   title: string;
-  summary: string;
+  summary?: string | undefined;
   startDate: string;
   endDate: string;
   originCity?: string;

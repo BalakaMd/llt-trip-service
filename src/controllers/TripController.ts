@@ -25,6 +25,7 @@ class TripController {
       const trip = await TripService.createTrip({
         userId: req.user.id,
         title,
+        summary: undefined, // Default to undefined for manual creation
         startDate,
         endDate,
         originCity,
