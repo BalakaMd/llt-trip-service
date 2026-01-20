@@ -25,6 +25,10 @@ const router = Router();
  *     summary: Create a new trip
  *     description: Creates a new trip with the provided details
  *     tags: [Trips]
+ *     security:
+ *       - UserContext: []
+ *       - UserEmail: []
+ *       - UserRoles: []
  *     requestBody:
  *       required: true
  *       content:
@@ -32,7 +36,6 @@ const router = Router();
  *           schema:
  *             $ref: '#/components/schemas/CreateTripRequest'
  *           example:
- *             userId: "123e4567-e89b-12d3-a456-426614174000"
  *             title: "Weekend in Paris"
  *             startDate: "2024-06-01"
  *             endDate: "2024-06-03"
@@ -60,6 +63,12 @@ const router = Router();
  *                       $ref: '#/components/schemas/Trip'
  *       400:
  *         description: Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       401:
+ *         description: Authentication required
  *         content:
  *           application/json:
  *             schema:
@@ -258,6 +267,10 @@ router.get(
  *     summary: Add an itinerary item to a trip
  *     description: Adds a new place or activity to the trip itinerary
  *     tags: [Itinerary]
+ *     security:
+ *       - UserContext: []
+ *       - UserEmail: []
+ *       - UserRoles: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -303,6 +316,12 @@ router.get(
  *                       $ref: '#/components/schemas/ItineraryItem'
  *       400:
  *         description: Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       401:
+ *         description: Authentication required
  *         content:
  *           application/json:
  *             schema:
@@ -364,6 +383,10 @@ router.get(
  *     summary: Generate a trip recommendation
  *     description: Creates AI-powered trip recommendations based on user preferences and constraints
  *     tags: [Trips]
+ *     security:
+ *       - UserContext: []
+ *       - UserEmail: []
+ *       - UserRoles: []
  *     requestBody:
  *       required: true
  *       content:
@@ -410,6 +433,12 @@ router.get(
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
+ *       401:
+ *         description: Authentication required
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.post(
   '/trips/recommend',
@@ -424,6 +453,10 @@ router.post(
  *     summary: Clone a trip
  *     description: Creates a copy of an existing trip for a specified user
  *     tags: [Trips]
+ *     security:
+ *       - UserContext: []
+ *       - UserEmail: []
+ *       - UserRoles: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -433,14 +466,6 @@ router.post(
  *           type: string
  *           format: uuid
  *         example: "123e4567-e89b-12d3-a456-426614174000"
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/CloneTripRequest'
- *           example:
- *             userId: "987fcdeb-51a2-43d1-9876-543210987654"
  *     responses:
  *       201:
  *         description: Trip cloned successfully
@@ -459,6 +484,12 @@ router.post(
  *                       $ref: '#/components/schemas/Trip'
  *       404:
  *         description: Original trip not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       401:
+ *         description: Authentication required
  *         content:
  *           application/json:
  *             schema:

@@ -28,6 +28,22 @@ src/
 └── server.ts        # Application entry point
 ```
 
+## User Context Handling
+
+The service requires user authentication and extracts user context from headers sent by the API Gateway:
+
+- **x-user-id**: User ID (UUID) - **REQUIRED**
+- **x-user-email**: User email address (optional)
+- **x-user-roles**: User roles (comma-separated string or single role, optional)
+
+This context is automatically used in:
+
+- **POST /trips**: Creates trips with authenticated user ID
+- **POST /trips/recommend**: Generates recommendations with user context
+- **POST /trips/:id/clone**: Clones trips for authenticated users
+
+**Authentication Required**: All trip creation and modification endpoints require a valid `x-user-id` header. If the header is missing, the service will return a 401 Unauthorized error.
+
 ## Installation and Setup
 
 ### 1. Install Dependencies
@@ -68,6 +84,7 @@ Interactive API documentation is available via Swagger UI:
 **URL**: `http://localhost:3000/trip/docs`
 
 The documentation includes:
+
 - All available endpoints
 - Request/response schemas
 - Try-it-out functionality

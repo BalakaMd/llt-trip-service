@@ -17,6 +17,19 @@ const options: swaggerJsdoc.Options = {
         - **Trip Sharing**: Generate public share links
         - **AI Recommendations**: Get personalized trip suggestions
         
+        ## Authentication
+        This service requires user context headers for all protected endpoints:
+        - **x-user-id**: User ID (UUID) - REQUIRED for all POST/PUT/DELETE operations
+        - **x-user-email**: User email address (optional)
+        - **x-user-roles**: User roles (optional, comma-separated)
+        
+        Example headers for testing:
+        \`\`\`
+        x-user-id: 123e4567-e89b-12d3-a456-426614174000
+        x-user-email: test@example.com
+        x-user-roles: user
+        \`\`\`
+        
         ## Error Handling
         All endpoints return consistent error responses with status codes and descriptive messages.
       `,
@@ -62,6 +75,26 @@ const options: swaggerJsdoc.Options = {
       },
     ],
     components: {
+      securitySchemes: {
+        UserContext: {
+          type: 'apiKey',
+          in: 'header',
+          name: 'x-user-id',
+          description: 'User ID (UUID) - Required for all protected endpoints',
+        },
+        UserEmail: {
+          type: 'apiKey',
+          in: 'header',
+          name: 'x-user-email',
+          description: 'User email address (optional)',
+        },
+        UserRoles: {
+          type: 'apiKey',
+          in: 'header',
+          name: 'x-user-roles',
+          description: 'User roles (optional, comma-separated)',
+        },
+      },
       schemas: {
         Trip: {
           type: 'object',
@@ -89,7 +122,6 @@ const options: swaggerJsdoc.Options = {
           type: 'object',
           required: ['title', 'startDate', 'endDate'],
           properties: {
-            userId: { type: 'string', format: 'uuid' },
             title: { type: 'string', example: 'Weekend in Paris' },
             startDate: {
               type: 'string',
@@ -241,18 +273,22 @@ const options: swaggerJsdoc.Options = {
             },
             timezone: { type: 'string', example: 'Europe/Kyiv' },
             dryRun: { type: 'boolean', example: false },
+            currency: {
+              type: 'string',
+              length: 3,
+              example: 'UAH',
+              default: 'UAH',
+            },
+            language: {
+              type: 'string',
+              example: 'Ukrainian',
+              default: 'Ukrainian',
+            },
           },
         },
         CloneTripRequest: {
           type: 'object',
-          required: ['userId'],
-          properties: {
-            userId: {
-              type: 'string',
-              format: 'uuid',
-              example: '123e4567-e89b-12d3-a456-426614174000',
-            },
-          },
+          properties: {},
         },
         BudgetItemRequest: {
           type: 'object',

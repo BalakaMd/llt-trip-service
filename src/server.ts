@@ -5,6 +5,7 @@ import { initDb } from './config/database';
 import swaggerSpec from './config/swagger';
 import tripRoutes from './routes/tripRoutes';
 import { errorMiddleware } from './middlewares/errorMiddleware';
+import { userContextMiddleware } from './middlewares/userContext';
 
 dotenv.config();
 
@@ -14,6 +15,7 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(userContextMiddleware);
 
 // Swagger documentation with enhanced UI options
 const swaggerOptions = {

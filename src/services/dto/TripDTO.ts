@@ -1,7 +1,7 @@
 import { Trip } from '../../models';
 
 export interface CreateTripDTO {
-  userId?: string;
+  userId: string;
   title: string;
   startDate: string;
   endDate: string;
@@ -14,6 +14,7 @@ export interface CreateTripDTO {
 }
 
 export interface RecommendTripDTO {
+  userId: string;
   origin: {
     city: string;
     lat?: number;

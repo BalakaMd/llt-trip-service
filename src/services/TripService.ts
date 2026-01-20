@@ -169,6 +169,7 @@ class TripService {
 
     // Create actual trip based on AI recommendation
     const trip = await this.createTrip({
+      userId: data.userId,
       title: aiRecommendation.title,
       startDate: data.dates.start,
       endDate: data.dates.end,

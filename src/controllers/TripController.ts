@@ -6,7 +6,6 @@ class TripController {
   async createTrip(req: Request, res: Response): Promise<void> {
     try {
       const {
-        userId,
         title,
         startDate,
         endDate,
@@ -18,8 +17,13 @@ class TripController {
         currency,
       } = req.body;
 
+      // User ID is required from request context
+      if (!req.user?.id) {
+        throw new AppError('User authentication required', 401);
+      }
+
       const trip = await TripService.createTrip({
-        userId,
+        userId: req.user.id,
         title,
         startDate,
         endDate,
@@ -152,6 +156,13 @@ class TripController {
     try {
       const recommendData = req.body;
 
+      // Add user ID from request context (required)
+      if (!req.user?.id) {
+        throw new AppError('User authentication required', 401);
+      }
+
+      recommendData.userId = req.user.id;
+
       const result = await TripService.recommendTrip(recommendData);
 
       res.status(200).json({
@@ -166,9 +177,13 @@ class TripController {
   async cloneTrip(req: Request, res: Response): Promise<void> {
     try {
       const { id } = req.params;
-      const { userId } = req.body;
 
-      const clonedTrip = await TripService.cloneTrip(id, userId);
+      // User ID is required from request context
+      if (!req.user?.id) {
+        throw new AppError('User authentication required', 401);
+      }
+
+      const clonedTrip = await TripService.cloneTrip(id, req.user.id);
 
       res.status(201).json({
         status: 'success',

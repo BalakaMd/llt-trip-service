@@ -41,7 +41,7 @@ class AIRecommendationService {
       const response = await axios.post<AIRecommendationResponse>(
         `${this.aiServiceUrl}/internal/v1/ai/recommend`,
         {
-          user_id: '00000000-0000-0000-0000-000000000000',
+          user_id: data.userId,
           user_profile: {
             interests: data.interests,
             transport_modes: [data.transport],

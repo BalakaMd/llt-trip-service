@@ -1,7 +1,6 @@
 import Joi from 'joi';
 
 export const createTripSchema = Joi.object({
-  userId: Joi.string().uuid().optional(),
   title: Joi.string().min(1).max(255).required().messages({
     'string.empty': 'Title is required',
     'string.max': 'Title must be at most 255 characters',
