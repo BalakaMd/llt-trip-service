@@ -37,11 +37,10 @@ export interface RecommendTripDTO {
 export interface BudgetItemDTO {
   id?: string;
   category: 'transport' | 'stay' | 'food' | 'activities' | 'other';
-  title: string;
-  quantity: number;
-  unitPrice: number;
+  amount: number;
   currency: string;
-  source: 'ai' | 'user' | 'integration';
+  description?: string;
+  date?: string;
   linkedItineraryItemId?: string;
 }
 

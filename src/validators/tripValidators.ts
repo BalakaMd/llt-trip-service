@@ -111,11 +111,10 @@ export const budgetItemSchema = Joi.object({
   category: Joi.string()
     .valid('transport', 'stay', 'food', 'activities', 'other')
     .required(),
-  title: Joi.string().min(1).max(255).required(),
-  quantity: Joi.number().integer().min(1).required().default(1),
-  unitPrice: Joi.number().min(0).required(),
-  currency: Joi.string().length(3).required().default('UAH'),
-  source: Joi.string().valid('ai', 'user', 'integration').required(),
+  amount: Joi.number().min(0).required(),
+  currency: Joi.string().length(3).required().default('USD'),
+  description: Joi.string().optional(),
+  date: Joi.date().iso().optional(),
   linkedItineraryItemId: Joi.string().uuid().optional(),
 });
 
@@ -123,11 +122,10 @@ export const updateBudgetItemSchema = Joi.object({
   category: Joi.string()
     .valid('transport', 'stay', 'food', 'activities', 'other')
     .optional(),
-  title: Joi.string().min(1).max(255).optional(),
-  quantity: Joi.number().integer().min(1).optional(),
-  unitPrice: Joi.number().min(0).optional(),
+  amount: Joi.number().min(0).optional(),
   currency: Joi.string().length(3).optional(),
-  source: Joi.string().valid('ai', 'user', 'integration').optional(),
+  description: Joi.string().optional(),
+  date: Joi.date().iso().optional(),
   linkedItineraryItemId: Joi.string().uuid().optional().allow(null),
 })
   .min(1)

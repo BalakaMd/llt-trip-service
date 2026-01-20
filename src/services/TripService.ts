@@ -305,11 +305,10 @@ class TripService {
     const budgetItem = await BudgetItemRepository.create({
       tripId,
       category: data.category,
-      title: data.title,
-      quantity: data.quantity,
-      unitPrice: data.unitPrice,
+      amount: data.amount,
       currency: data.currency,
-      source: data.source,
+      description: data.description || null,
+      date: data.date ? new Date(data.date) : null,
       linkedItineraryItemId: data.linkedItineraryItemId || null,
     });
 

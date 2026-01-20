@@ -11,7 +11,7 @@ class BudgetItemRepository extends BaseRepository<BudgetItem> {
       where: { tripId },
       order: [
         ['category', 'ASC'],
-        ['title', 'ASC'],
+        ['date', 'ASC'],
       ],
     });
   }
@@ -22,7 +22,7 @@ class BudgetItemRepository extends BaseRepository<BudgetItem> {
   ): Promise<BudgetItem[]> {
     return await this.model.findAll({
       where: { tripId, category },
-      order: [['title', 'ASC']],
+      order: [['date', 'ASC']],
     });
   }
 
@@ -36,8 +36,7 @@ class BudgetItemRepository extends BaseRepository<BudgetItem> {
     };
 
     items.forEach(item => {
-      const totalPrice = item.unitPrice * item.quantity;
-      summary.totalAmount += totalPrice;
+      summary.totalAmount += item.amount;
 
       if (!summary.categories[item.category]) {
         summary.categories[item.category] = {
@@ -46,7 +45,7 @@ class BudgetItemRepository extends BaseRepository<BudgetItem> {
         };
       }
 
-      summary.categories[item.category].amount += totalPrice;
+      summary.categories[item.category].amount += item.amount;
       summary.categories[item.category].items += 1;
     });
 

@@ -5,21 +5,19 @@ interface BudgetItemAttributes {
   id: string;
   tripId: string;
   category: 'transport' | 'stay' | 'food' | 'activities' | 'other';
-  title: string;
-  quantity: number;
-  unitPrice: number;
+  amount: number;
   currency: string;
-  source: 'ai' | 'user' | 'integration';
+  description?: string;
+  date?: Date;
   linkedItineraryItemId: string | null;
   createdAt: Date;
   updatedAt: Date;
 }
 
-interface BudgetItemCreationAttributes
-  extends Optional<
-    BudgetItemAttributes,
-    'id' | 'quantity' | 'linkedItineraryItemId' | 'createdAt' | 'updatedAt'
-  > {}
+interface BudgetItemCreationAttributes extends Optional<
+  BudgetItemAttributes,
+  'id' | 'linkedItineraryItemId' | 'createdAt' | 'updatedAt'
+> {}
 
 class BudgetItem
   extends Model<BudgetItemAttributes, BudgetItemCreationAttributes>
@@ -28,11 +26,10 @@ class BudgetItem
   public id!: string;
   public tripId!: string;
   public category!: 'transport' | 'stay' | 'food' | 'activities' | 'other';
-  public title!: string;
-  public quantity!: number;
-  public unitPrice!: number;
+  public amount!: number;
   public currency!: string;
-  public source!: 'ai' | 'user' | 'integration';
+  public description?: string;
+  public date?: Date;
   public linkedItineraryItemId!: string | null;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -59,28 +56,22 @@ BudgetItem.init(
       type: DataTypes.ENUM('transport', 'stay', 'food', 'activities', 'other'),
       allowNull: false,
     },
-    title: {
-      type: DataTypes.STRING(255),
-      allowNull: false,
-    },
-    quantity: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 1,
-    },
-    unitPrice: {
+    amount: {
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
-      field: 'unit_price',
     },
     currency: {
       type: DataTypes.CHAR(3),
       allowNull: false,
       defaultValue: 'USD',
     },
-    source: {
-      type: DataTypes.ENUM('ai', 'user', 'integration'),
-      allowNull: false,
+    description: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    date: {
+      type: DataTypes.DATEONLY,
+      allowNull: true,
     },
     linkedItineraryItemId: {
       type: DataTypes.UUID,
