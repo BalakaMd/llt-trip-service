@@ -18,6 +18,20 @@ import { Trip, ItineraryItem, BudgetItem } from '../models';
 import { AppError } from '../utils/errorHandler';
 
 class TripService {
+  private async verifyTripOwnership(
+    tripId: string,
+    userId: string,
+  ): Promise<Trip> {
+    const trip = await TripRepository.findById(tripId);
+    if (!trip) {
+      throw new AppError('Trip not found', 404);
+    }
+    if (trip.userId !== userId) {
+      throw new AppError('Forbidden: You do not own this trip', 403);
+    }
+    return trip;
+  }
+
   async createTrip(data: CreateTripDTO): Promise<Trip> {
     const trip = await TripRepository.create({
       userId: data.userId || null,
@@ -36,15 +50,26 @@ class TripService {
     return trip;
   }
 
-  async getTripById(tripId: string): Promise<Trip | null> {
-    return await TripRepository.findById(tripId);
+  async getTripById(tripId: string, userId?: string): Promise<Trip | null> {
+    const trip = await TripRepository.findById(tripId);
+    if (!trip) {
+      return null;
+    }
+    if (userId && trip.userId !== userId) {
+      throw new AppError('Forbidden: You do not own this trip', 403);
+    }
+    return trip;
   }
 
-  async getUserTrips(userId: string): Promise<Trip[]> {
+  async getUserTrips(userId: string, requestUserId: string): Promise<Trip[]> {
+    if (userId !== requestUserId) {
+      throw new AppError('Forbidden: You can only view your own trips', 403);
+    }
     return await TripRepository.findByUserId(userId);
   }
 
-  async deleteTrip(tripId: string): Promise<boolean> {
+  async deleteTrip(tripId: string, userId: string): Promise<boolean> {
+    await this.verifyTripOwnership(tripId, userId);
     const deleted = await TripRepository.delete(tripId);
     return deleted > 0;
   }
@@ -52,11 +77,9 @@ class TripService {
   async updateTrip(
     tripId: string,
     data: Partial<CreateTripDTO>,
+    userId: string,
   ): Promise<Trip | null> {
-    const trip = await TripRepository.findById(tripId);
-    if (!trip) {
-      return null;
-    }
+    const trip = await this.verifyTripOwnership(tripId, userId);
 
     const updateData: any = {};
     if (data.title !== undefined) updateData.title = data.title;
@@ -75,7 +98,10 @@ class TripService {
   async addItineraryItem(
     tripId: string,
     data: AddItineraryItemDTO,
+    userId: string,
   ): Promise<ItineraryItem> {
+    await this.verifyTripOwnership(tripId, userId);
+
     // First, ensure the place exists in the global catalog
     const place = await PlaceRepository.findOrCreate({
       externalRef: data.googlePlaceId,
@@ -102,7 +128,14 @@ class TripService {
     return itineraryItem;
   }
 
-  async getTripMapData(tripId: string): Promise<MapResponseDTO> {
+  async getTripMapData(
+    tripId: string,
+    userId?: string,
+  ): Promise<MapResponseDTO> {
+    if (userId) {
+      await this.verifyTripOwnership(tripId, userId);
+    }
+
     // Fetch all itinerary items for this trip
     const items = await ItineraryItemRepository.findByTripId(tripId);
 
@@ -229,10 +262,19 @@ class TripService {
     };
   }
 
-  async cloneTrip(tripId: string, userId?: string): Promise<Trip> {
+  async cloneTrip(tripId: string, userId: string): Promise<Trip> {
     const originalTrip = await TripRepository.findById(tripId);
     if (!originalTrip) {
       throw new AppError('Trip not found', 404);
+    }
+    if (
+      originalTrip.userId !== userId &&
+      originalTrip.visibility !== 'shared'
+    ) {
+      throw new AppError(
+        'Forbidden: You can only clone your own trips or shared trips',
+        403,
+      );
     }
 
     const clonedTrip = await TripRepository.create({
@@ -274,11 +316,8 @@ class TripService {
     return clonedTrip;
   }
 
-  async createShareSlug(tripId: string): Promise<string> {
-    const trip = await TripRepository.findById(tripId);
-    if (!trip) {
-      throw new AppError('Trip not found', 404);
-    }
+  async createShareSlug(tripId: string, userId: string): Promise<string> {
+    const trip = await this.verifyTripOwnership(tripId, userId);
 
     const shareSlug = this.generateShareSlug();
     await TripRepository.update(tripId, {
@@ -296,11 +335,9 @@ class TripService {
   async addBudgetItem(
     tripId: string,
     data: BudgetItemDTO,
+    userId: string,
   ): Promise<BudgetItem> {
-    const trip = await TripRepository.findById(tripId);
-    if (!trip) {
-      throw new AppError('Trip not found', 404);
-    }
+    await this.verifyTripOwnership(tripId, userId);
 
     const budgetItem = await BudgetItemRepository.create({
       tripId,
@@ -318,28 +355,32 @@ class TripService {
   async updateBudgetItem(
     itemId: string,
     data: Partial<BudgetItemDTO>,
+    userId: string,
   ): Promise<BudgetItem | null> {
     const item = await BudgetItemRepository.findById(itemId);
     if (!item) {
       return null;
     }
+    await this.verifyTripOwnership(item.tripId, userId);
 
     await BudgetItemRepository.update(itemId, data);
     return await BudgetItemRepository.findById(itemId);
   }
 
-  async getBudgetSummary(tripId: string): Promise<BudgetSummaryDTO> {
+  async getBudgetSummary(
+    tripId: string,
+    userId: string,
+  ): Promise<BudgetSummaryDTO> {
+    await this.verifyTripOwnership(tripId, userId);
     return await BudgetItemRepository.getBudgetSummary(tripId);
   }
 
   async updateItinerary(
     tripId: string,
     items: any[],
+    userId: string,
   ): Promise<ItineraryItem[]> {
-    const trip = await TripRepository.findById(tripId);
-    if (!trip) {
-      throw new AppError('Trip not found', 404);
-    }
+    await this.verifyTripOwnership(tripId, userId);
 
     // Delete existing items
     await ItineraryItemRepository.deleteByTripId(tripId);
@@ -361,7 +402,10 @@ class TripService {
     tripId: string,
     itemId: string,
     data: any,
+    userId: string,
   ): Promise<ItineraryItem | null> {
+    await this.verifyTripOwnership(tripId, userId);
+
     const item = await ItineraryItemRepository.findById(itemId);
     if (!item || item.tripId !== tripId) {
       return null;

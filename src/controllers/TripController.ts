@@ -49,7 +49,11 @@ class TripController {
     try {
       const { id } = req.params;
 
-      const trip = await TripService.getTripById(id);
+      if (!req.user?.id) {
+        throw new AppError('User authentication required', 401);
+      }
+
+      const trip = await TripService.getTripById(id, req.user.id);
 
       if (!trip) {
         throw new AppError('Trip not found', 404);
@@ -68,7 +72,11 @@ class TripController {
     try {
       const { userId } = req.params;
 
-      const trips = await TripService.getUserTrips(userId);
+      if (!req.user?.id) {
+        throw new AppError('User authentication required', 401);
+      }
+
+      const trips = await TripService.getUserTrips(userId, req.user.id);
 
       res.status(200).json({
         status: 'success',
@@ -83,7 +91,11 @@ class TripController {
     try {
       const { id } = req.params;
 
-      const deleted = await TripService.deleteTrip(id);
+      if (!req.user?.id) {
+        throw new AppError('User authentication required', 401);
+      }
+
+      const deleted = await TripService.deleteTrip(id, req.user.id);
 
       if (!deleted) {
         throw new AppError('Trip not found', 404);
@@ -100,7 +112,11 @@ class TripController {
       const { id } = req.params;
       const updateData = req.body;
 
-      const trip = await TripService.updateTrip(id, updateData);
+      if (!req.user?.id) {
+        throw new AppError('User authentication required', 401);
+      }
+
+      const trip = await TripService.updateTrip(id, updateData, req.user.id);
 
       if (!trip) {
         throw new AppError('Trip not found', 404);
@@ -120,6 +136,10 @@ class TripController {
       const { id } = req.params;
       const itemData = req.body;
 
+      if (!req.user?.id) {
+        throw new AppError('User authentication required', 401);
+      }
+
       if (!itemData.googlePlaceId || !itemData.name || !itemData.location) {
         throw new AppError(
           'Missing required fields: googlePlaceId, name, location',
@@ -127,7 +147,11 @@ class TripController {
         );
       }
 
-      const item = await TripService.addItineraryItem(id, itemData);
+      const item = await TripService.addItineraryItem(
+        id,
+        itemData,
+        req.user.id,
+      );
 
       res.status(201).json({
         status: 'success',
@@ -142,7 +166,11 @@ class TripController {
     try {
       const { id } = req.params;
 
-      const mapData = await TripService.getTripMapData(id);
+      if (!req.user?.id) {
+        throw new AppError('User authentication required', 401);
+      }
+
+      const mapData = await TripService.getTripMapData(id, req.user.id);
 
       res.status(200).json({
         status: 'success',
@@ -199,7 +227,11 @@ class TripController {
     try {
       const { id } = req.params;
 
-      const shareSlug = await TripService.createShareSlug(id);
+      if (!req.user?.id) {
+        throw new AppError('User authentication required', 401);
+      }
+
+      const shareSlug = await TripService.createShareSlug(id, req.user.id);
 
       res.status(200).json({
         status: 'success',
@@ -234,7 +266,15 @@ class TripController {
       const { id } = req.params;
       const budgetData = req.body;
 
-      const budgetItem = await TripService.addBudgetItem(id, budgetData);
+      if (!req.user?.id) {
+        throw new AppError('User authentication required', 401);
+      }
+
+      const budgetItem = await TripService.addBudgetItem(
+        id,
+        budgetData,
+        req.user.id,
+      );
 
       res.status(201).json({
         status: 'success',
@@ -250,7 +290,15 @@ class TripController {
       const { bid } = req.params;
       const updateData = req.body;
 
-      const budgetItem = await TripService.updateBudgetItem(bid, updateData);
+      if (!req.user?.id) {
+        throw new AppError('User authentication required', 401);
+      }
+
+      const budgetItem = await TripService.updateBudgetItem(
+        bid,
+        updateData,
+        req.user.id,
+      );
 
       if (!budgetItem) {
         throw new AppError('Budget item not found', 404);
@@ -269,7 +317,11 @@ class TripController {
     try {
       const { id } = req.params;
 
-      const summary = await TripService.getBudgetSummary(id);
+      if (!req.user?.id) {
+        throw new AppError('User authentication required', 401);
+      }
+
+      const summary = await TripService.getBudgetSummary(id, req.user.id);
 
       res.status(200).json({
         status: 'success',
@@ -285,7 +337,15 @@ class TripController {
       const { id } = req.params;
       const { items } = req.body;
 
-      const updatedItems = await TripService.updateItinerary(id, items);
+      if (!req.user?.id) {
+        throw new AppError('User authentication required', 401);
+      }
+
+      const updatedItems = await TripService.updateItinerary(
+        id,
+        items,
+        req.user.id,
+      );
 
       res.status(200).json({
         status: 'success',
@@ -301,10 +361,15 @@ class TripController {
       const { id, itemId } = req.params;
       const updateData = req.body;
 
+      if (!req.user?.id) {
+        throw new AppError('User authentication required', 401);
+      }
+
       const item = await TripService.updateItineraryItem(
         id,
         itemId,
         updateData,
+        req.user.id,
       );
 
       if (!item) {
