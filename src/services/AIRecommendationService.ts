@@ -38,6 +38,19 @@ class AIRecommendationService {
     data: RecommendTripDTO,
   ): Promise<AIRecommendationResponse> {
     try {
+      // Calculate duration in days, ensuring minimum of 1 day
+      const timeDiff =
+        new Date(data.dates.end).getTime() -
+        new Date(data.dates.start).getTime();
+      const durationDays = Math.max(
+        1,
+        Math.ceil(timeDiff / (1000 * 60 * 60 * 24)),
+      );
+
+      // Calculate average daily budget, avoiding division by zero
+      const avgDailyBudget =
+        durationDays > 0 ? Math.round(data.budget / durationDays) : data.budget;
+
       const response = await axios.post<AIRecommendationResponse>(
         `${this.aiServiceUrl}/internal/v1/ai/recommend`,
         {
@@ -45,21 +58,12 @@ class AIRecommendationService {
           user_profile: {
             interests: data.interests,
             transport_modes: [data.transport],
-            avg_daily_budget: Math.round(
-              data.budget /
-                ((new Date(data.dates.end).getTime() -
-                  new Date(data.dates.start).getTime()) /
-                  (1000 * 60 * 60 * 24)),
-            ),
+            avg_daily_budget: avgDailyBudget,
           },
           constraints: {
             origin_city: data.origin.city,
             destination_city: data.origin.city, // AI service expects destination, we use same as origin for local trips
-            duration_days: Math.ceil(
-              (new Date(data.dates.end).getTime() -
-                new Date(data.dates.start).getTime()) /
-                (1000 * 60 * 60 * 24),
-            ),
+            duration_days: durationDays,
             total_budget: data.budget,
             travel_party_size: 1,
           },

@@ -8,10 +8,28 @@ export const createTripSchema = Joi.object({
   startDate: Joi.date().iso().required().messages({
     'date.format': 'Start date must be a valid ISO date (YYYY-MM-DD)',
   }),
-  endDate: Joi.date().iso().min(Joi.ref('startDate')).required().messages({
-    'date.min': 'End date must be after or equal to start date',
-    'date.format': 'End date must be a valid ISO date (YYYY-MM-DD)',
-  }),
+  endDate: Joi.date()
+    .iso()
+    .min(Joi.ref('startDate'))
+    .required()
+    .custom((value, helpers) => {
+      const startDate = new Date(helpers.state.ancestors[0].startDate);
+      const endDate = new Date(value);
+      const diffTime = Math.abs(endDate.getTime() - startDate.getTime());
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+      if (diffDays > 14) {
+        return helpers.error('custom.durationMax');
+      }
+
+      return value;
+    }, 'Duration validation')
+    .messages({
+      'date.min': 'End date must be after or equal to start date',
+      'date.format': 'End date must be a valid ISO date (YYYY-MM-DD)',
+      'custom.durationMax': 'Trip duration cannot exceed 14 days',
+      'any.invalid': 'Invalid date range',
+    }),
   originCity: Joi.string().max(255).optional(),
   originLat: Joi.number().min(-90).max(90).optional().messages({
     'number.min': 'Latitude must be between -90 and 90',
@@ -90,7 +108,27 @@ export const recommendTripSchema = Joi.object({
   }).required(),
   dates: Joi.object({
     start: Joi.date().iso().required(),
-    end: Joi.date().iso().min(Joi.ref('start')).required(),
+    end: Joi.date()
+      .iso()
+      .min(Joi.ref('start'))
+      .required()
+      .custom((value, helpers) => {
+        const startDate = new Date(helpers.state.ancestors[0].start);
+        const endDate = new Date(value);
+        const diffTime = Math.abs(endDate.getTime() - startDate.getTime());
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        if (diffDays > 14) {
+          return helpers.error('custom.durationMax');
+        }
+
+        return value;
+      }, 'Duration validation')
+      .messages({
+        'date.min': 'End date must be after or equal to start date',
+        'custom.durationMax': 'Trip duration cannot exceed 14 days',
+        'any.invalid': 'Invalid date range',
+      }),
   }).required(),
   budget: Joi.number().min(0).required(),
   interests: Joi.array().items(Joi.string()).min(1).required().messages({
